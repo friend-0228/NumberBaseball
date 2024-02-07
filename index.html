@@ -5,16 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>숫자야구</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div>숫자야구</div>
-    <div>컴퓨터가 숫자를 생성하였습니다. 답을 맞춰보세요😀</div>
-    <div id="tries"></div><div id="value"></div>
-    <form id="form">
-        <input type="text" id="input" placeholder="Guess the number"/>
-        <button id="play-button">Go!</button>
-    </form>
-    <div id="logs"></div>
+    <div id="top1" class="text">⚾숫자야구⚾</div>
+    <div id="top2" class="text">컴퓨터가 숫자를 생성하였습니다. 답을 맞춰보세요😀</div>
+    <div id="body">
+        <div id="tries" class="text"></div><div id="value" class="text"></div>
+            <form id="form">
+                <input type="text" id="input" placeholder="Guess the number"/>
+                <button id="play-button">Go!</button>
+            </form>
+            <div id="logs" class="text"></div>
+        </div>
 
     <script>
         const $input = document.querySelector('#input');    // 사용자 입력값 가져오기
