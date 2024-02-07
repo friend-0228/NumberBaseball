@@ -7,16 +7,95 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>숫자야구</h1>
-    <h2>컴퓨터가 숫자를 생성하였습니다. 답을 맞춰보세요😀</h2>
-    <div>?번째 시도</div>
-    <input type="number" id="user-input"/>
+    <div>숫자야구</div>
+    <div>컴퓨터가 숫자를 생성하였습니다. 답을 맞춰보세요😀</div>
+    <div id="tries"></div><div id="value"></div>
+    <form id="form">
+        <input type="text" id="input" placeholder="Guess the number"/>
+        <button id="play-button">Go!</button>
+    </form>
+    <div id="logs"></div>
 
-    <button id="play-button">Go!</button>
-    
-    <div id="resultDisplay">결과값 ?B?S</div>
+    <script>
+        const $input = document.querySelector('#input');    // 사용자 입력값 가져오기
+        const $form = document.querySelector('#form');      // form태그 가져오기
+        const $logs = document.querySelector('#logs');      // 결과값 div 태그 가져오기
 
-    <script src="main.js">
+        // 0~9까지의 숫자를 배열에 담기
+        const numbers = []; // [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+        for(let n=0; n<10; n+=1) {
+            numbers.push(n);
+            console.log("numbers ? ", numbers)
+        }
+        // 배열에 담긴 0~9 숫자를 무작위로 뽑기
+        const answer = [];
+        for(let n=0; n<3; n+=1) {   // 세 번 반복
+            const index = Math.floor(Math.random() * numbers.length);    // 0~9 정수
+            answer.push(numbers[index]);    // 뽑은 숫자는 새로운 배열에 담기
+            numbers.splice(index, 1);       // 새로운 배열에 담은 숫자는 원래 배열에서 빼주기
+        }
+        console.log("answer : ", answer)
+
+        const tries = [];
+        // 사용자가 숫자 입력 시 조건에 맞게 입력했는지 검사하는 함수. 지금은 간단하게 alert를 사용했지만 요즘은 alert를 사용하지 않는 추세.
+        function checkInput(input) {
+            if(input.length !==3) {                           // 길이는 3이 맞는가?
+                return alert('3자리 숫자를 입력해 주세요');
+            }
+            if(new Set(input).size !==3) {
+                return alert('중복되지 않게 입력해 주세요');    // 중복된 숫자가 있는가?
+            }
+            if(tries.includes(input)) {
+                return alert('이미 시도한 값입니다');           // 이미 시도한 값인가?
+            }
+            return true;
+        }
+
+        // 사용자가 숫자를 입력했을 때
+        $form.addEventListener('submit', (event) => {
+            console.log("submit : ", 'submit')
+            console.log("event : ", event)
+
+            event.preventDefault();     // 기본 동작(submit의 새로고침) 막기
+            const value = $input.value; // $input.value 대신에 event target의 0번째를 사용할 수 있다.
+            $input.value = '';          // 사용가 숫자를 입력 후 변수에 저장하면 다음값을 쉽게 입력하기 위해 글자를 지워준다. 이런 디테일이 센스있는 개발자!
+            
+            if(!checkInput(value)) {    // 사용자가 입력한 숫자가 문제 있으면 바로 리턴.
+                return;
+            }
+            // 입력값 문제 없음
+            // 사용자의 입력값이 랜덤숫자와 일치한다면 게임 종료
+            if(answer.join('') === value) {     // join() : 배열을 문자열로 바꾸는 메소드. ('')를 안쓰면 따옴표가 붙는다(기본값 ',') ex)1,2,3
+                tries.push(value);
+                $logs.textContent = `${tries.length}번만에 맞히셨습니다. 게임을 종료합니다.`;
+                console.log("게임 종료! ", tries)
+                return;
+            } 
+            else {
+                // 에러 있음
+            }
+            tries.push(value)
+            
+            // 스트라이크, 볼 갯수가 몇개인지 알아보기.
+            let strike = 0;
+            let ball = 0;
+            
+            for(let i=0; i<answer.length; i++) {
+                const index = value.indexOf(answer[i]);
+                if(index > -1) {            // 랜덤숫자와 사용자의 입력값이 인덱스번호를 기준으로 맞는 것이 있다면 -1보다 큰 숫자가 나올 것이다. 인덱스 번호는 -1보다 크기 때문에. 
+                    if(index === i) {       // 랜덤숫자와 사용자의 입력값이 맞고, 그 숫자와 인덱스번호까지 일치한다면?
+                        strike += 1;        // strike! 
+                    } else {                
+                        ball += 1;          // 랜덤숫자와 사용자의 입력값이 맞지만, 자릿수가 일치하지 않는다면? ball
+                    }
+                }
+            }  
+            console.log("value : ", value)
+            console.log("strike : ", strike)
+            console.log("ball : ", ball)
+            logs.append(`${value} : ${strike}S${ball}B`, document.createElement('br'));
+            document.querySelector('#tries').textContent = `${tries.length}번째 시도: ${value}`;
+        });
 
     </script>
 </body>
